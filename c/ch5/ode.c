@@ -70,11 +70,11 @@ PetscErrorCode ExactSolution(PetscReal t, Vec y) {
 }
 
 PetscErrorCode FormRHSFunction(TS ts, PetscReal t, Vec y, Vec g,
-                               void *ptr) {
+                               void *ptr) { // TSSetRHSFunction calls this function so it must be of the form PetscErrorCode f(TS ts, PetscReal t, Vec u, Vec F, void *ctx) where u is input vector and F is function vector
     const PetscReal *ay;
     PetscReal       *ag;
-    PetscCall(VecGetArrayRead(y,&ay));
-    PetscCall(VecGetArray(g,&ag));
+    PetscCall(VecGetArrayRead(y,&ay)); // Get read-only pointer [i.e. ay] to contiguous array [i.e. y] containing this processor’s portion of the vector data.
+    PetscCall(VecGetArray(g,&ag));    // Returns a pointer [i.e. ag] to a contiguous array [i.e. g] that contains this processor’s portion of the vector data.
     ag[0] = ay[1];            // = g_1(t,y)
     ag[1] = - ay[0] + t;      // = g_2(t,y)
     PetscCall(VecRestoreArrayRead(y,&ay));
