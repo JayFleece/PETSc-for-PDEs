@@ -90,10 +90,11 @@ PetscErrorCode FormRHSFunction(TS ts, PetscReal t, Vec y, Vec g,
 //STARTJACOBIAN
 PetscErrorCode FormRHSJacobian(TS ts, PetscReal t, Vec y, Mat J, Mat P,
                                void *ptr) {
-    PetscInt   row[2] = {0, 1},  col[2] = {0, 1};
+    PetscInt   row[2] = {0, 1},  col[2] = {0, 1}; //row[2] shall be the global indices of the rows, col[2] shall be the global indices of the columns
     PetscReal  v[4] = { 0.0, 1.0,
-                       -1.0, 0.0};
-    PetscCall(MatSetValues(P,2,row,2,col,v,INSERT_VALUES));
+                       -1.0, 0.0}; 
+    PetscCall(MatSetValues(P,2,row,2,col,v,INSERT_VALUES)); //MatSetValues(Mat mat, PetscInt m, const PetscInt idxm[], PetscInt n, const PetscInt idxn[], const PetscScalar v[], InsertMode addv).
+                                                            // m is the number of rows, idxm is the global indices of the rows. Similarly for columns.
     PetscCall(MatAssemblyBegin(P,MAT_FINAL_ASSEMBLY));
     PetscCall(MatAssemblyEnd(P,MAT_FINAL_ASSEMBLY));
     if (J != P) {
